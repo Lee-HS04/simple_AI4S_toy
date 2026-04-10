@@ -13,3 +13,4 @@
   * area in m^2
   * velocities in m/s
   * angles in radians
+* Feel free to change the constants in simulator.py
