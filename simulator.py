@@ -3,24 +3,25 @@
 # the introduction of air resistance makes the simulation more realistic
 import numpy
 import pandas
+import matplotlib.pyplot as plt
 
 def experiment(mass, area, velocity_u, angle_launched):
     #defining our constants
     g = -9.81 # gravity
     rho = 1 # air density
-    Cd = 0.01 # drag coefficient (this is how much an object resists air)
+    Cd = 0.5 # drag coefficient (this is how much an object resists air)
     time_step = 0.001 # time step = 1ms
     
     #variables to be tracked in experiment
     time  = 0
     x = 0 # current x-coord
     y = 0 # current y-coord
-    velo_x = velocity_u*numpy.cos(angle_launched) # v_x = v_u * cos(theta)
-    velo_y = velocity_u*numpy.sin(angle_launched) # v_y = v_u * sin(theta)
+    velo_x = velocity_u*numpy.cos(numpy.radians(angle_launched)) # v_x = v_u * cos(theta)
+    velo_y = velocity_u*numpy.sin(numpy.radians(angle_launched)) # v_y = v_u * sin(theta)
     
     data = []
     
-    while y > 0: #y>0 means object still falling
+    while y >= 0: #y>0 means object still falling
         
         velocity = numpy.sqrt(velo_x**2 + velo_y**2) 
         drag = 0.5 * rho * velocity**2 * Cd * area
@@ -44,4 +45,29 @@ def experiment(mass, area, velocity_u, angle_launched):
 
     return pandas.DataFrame(data, columns = ['time', 'x', 'y', 'velo_x', 'velo_y'])
         
+    
+def plot_graph(data):
+    x_velocities = []
+    y_velocities = []
+    duration = []
+    for sample in data:
+        x_velocities.append(sample[3])
+        y_velocities.append(sample[4])
+        duration.append(sample[0])
+    
+    fig, graph = plt.subplots(nrows = 1, ncols = 2)
+    graph[0].plot(duration, x_velocities, marker='o', linestyle='-', label='x velocity')
+    graph[0].set_title('x velocity against time')
+    graph[0].set_xlabel('time(s)')
+    graph[0].set_ylabel('x velocity (m/s)')
+    graph[1].plot(duration, y_velocities, marker='o', linestyle='-', label='y velocity')
+    graph[1].set_title('y velocity against time')
+    graph[1].set_xlabel('time(s)')
+    graph[1].set_ylabel('y velocity (m/s)')
+    plt.tight_layout()
+    plt.show()
+    
+# Use these to test and see if the simulator and graph plotter are working 
+#sim1 = experiment(10, 2, 15, 30)
+#plot_graph(sim1.values)
     
