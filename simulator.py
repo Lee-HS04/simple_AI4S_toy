@@ -41,7 +41,11 @@ def experiment(mass, area, velocity_u, angle_launched):
         # Keep track of how much time has elapsed
         time += time_step
         
-        data.append((time, x, y, velo_x, velo_y))
+        # TODO: Add noise to the data to increase realism
+        y_noisy = y + numpy.random.normal(0,0.1)
+        x_noisy = x + numpy.random.normal(0,0.1)
+        
+        data.append((time, x_noisy, y_noisy, velo_x, velo_y))
 
     return pandas.DataFrame(data, columns = ['time', 'x', 'y', 'velo_x', 'velo_y'])
         
