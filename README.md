@@ -14,3 +14,5 @@
   * velocities in m/s
   * angles in radians
 * Feel free to change the constants in simulator.py
+* When running simple_formula_discoverer.py, the program will generate graphs. Make sure to close the graphs to prevent matplotlib from blocking the program from continuing.
+* Do note that the window size used in data_processor.py depends on the size of input data, and that the size of this input data depends on how fast the ball falls to the ground (if the ball falls very quickly, the data set will be smaller). The window_size MUST NOT be bigger than the number of data points in the input data
