@@ -9,7 +9,9 @@ def data_cleaner(data):
     # remove any data set with y<0
     data_local = data_local[data_local['y']>=0].copy()
     
-    window_length = 151
+    # Change window length according to the size of data set. Window CANNOT be larger than data set
+    window_length = min(len(data_local/5,151))
+    if window_length%2 == 0: win +=1 #window_length must be odd for it to work in savgol filter
     
     # We have realised that smoothing only the acceleration at the end using savgol is not enough to create a sufficiently clean data set for PySr to analyse. Therefore, we shall smooth at every step using savgol.
     #STEP 1 OF SMOOTHING: SMOOTH Y
@@ -82,4 +84,4 @@ def data_cleaner(data):
     
     return data_local
 
-data_cleaner(experiment(10,2,15,30))
+#data_cleaner(experiment(10,2,15,30))
