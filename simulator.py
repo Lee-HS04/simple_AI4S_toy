@@ -45,9 +45,9 @@ def experiment(mass, area, velocity_u, angle_launched):
         y_noisy = y + numpy.random.normal(0,0.001)
         x_noisy = x + numpy.random.normal(0,0.001)
         
-        data.append((time, x_noisy, y_noisy, velo_x, velo_y))
+        data.append((time, x_noisy, y_noisy, velo_x, velo_y, mass, area))
 
-    return pandas.DataFrame(data, columns = ['time', 'x', 'y', 'velo_x', 'velo_y'])
+    return pandas.DataFrame(data, columns = ['time', 'x', 'y', 'velo_x', 'velo_y', 'mass', 'area'])
         
     
 def plot_graph(data):
