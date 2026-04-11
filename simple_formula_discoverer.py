@@ -2,7 +2,9 @@ from pysr import PySRRegressor
 from simulator import experiment
 from data_processor import data_cleaner
 
-data = data_cleaner(experiment(10, 2, 15, 30)) # Parameters from left to right: mass, area, inital velocity, launch angle
+data = data_cleaner(experiment(10, 2, 200, 45)) # Parameters from left to right: mass, area, inital velocity, launch angle
+# About the parameters: if we are using a large initial velocity, we need a very small time step to accurately capture the changes in acceleration as the initial acceleration will be huge due to the drag force. 
+
 
 # Define features (X) and target (y)
 # We include 'v_smooth' so pysr can discover the drag formula
