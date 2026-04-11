@@ -21,20 +21,25 @@ def data_cleaner(data):
     #calculate acceleration using velocity calculated 
     data_local['acceleration'] = data_local['velocity'].diff()/data_local['time'].diff()
     
-    # Smooth the data (without smoothing the results will be too random as differentiation increases the effect of noise). We do this using a rolling average
-    data_local['smoothed_acceleration'] = data_local['acceleration'].rolling(window=10).mean()
+    # Smooth the data (without smoothing the results will be too random as differentiation increases the effect of noise). 
+    # METHOD 1: rolling average
+    data_local['smoothed_acceleration'] = data_local['acceleration'].rolling(window=1000).mean()
     # LEARNER's note: rolling average is a method where we take the average of a certain value in a window of sets. It 'rolls' because we slide the window over the data sets 1 by 1. e.g. our window here is 10, so the first window will be 9 dummies + 1st set, 2nd window will be 8 dummies + 1st set + 2nd set and so on.
     # Syntax breakdown: pandas does the rolling window for us using the .rolling() method. window is the amount of sets used to calculate the value (in this case the mean).
     # e.g. when we set window=10, this means that the 10th set in the window will have its specified value (smoothed_acceleration in this case) set to the average of the acceleration of the 10 sets in the window
+    # LEARNER's note: try out different window sizes. Larger window sizes introduce better smoothing but larger lags (a right shift of the smoothed curve compared to the actual curve). Smaller window sizes smooth less but have smaller lag as well
+    # LEARNER's note: we have realised that the rolling average is insufficient for our purpose. A smaller window does not smooth remotely enough to make the curve make sense. Using a huge window introduces lag too large to be acceptable
+    
+    #METHOD 2: 
     
     data_local = data_local.dropna() # dropna() tells pandas to remove any sets that have NaN values. 
     #e.g. in our vectorized filtering, a new entry will be generated when calculating the diff for the first set as there is no previous set, in rolling window window-1 dummies will be created.
-    # All dummy sets have NaN value, so we should remove them.
+    # All dummy sets have NaN value (be it in the y field, the velocity field or the acceleration field), and dropna() removes all such fields.
     
     #plot graph to see results. Here we plot the original acceleration and smoothed acceleration side by side to see the difference
     fig, graph = plt.subplots(nrows = 1, ncols = 2)
     graph[0].plot(data_local['time'], data_local['acceleration'], marker = 'o', linestyle = '-')
-    graph[0].set_title('accleration against time')
+    graph[0].set_title('acceleration against time')
     graph[0].set_xlabel('time(s)')
     graph[0].set_ylabel('a (m/s^2)')
     graph[1].plot(data_local['time'], data_local['smoothed_acceleration'], marker = 'o', linestyle = '-')
