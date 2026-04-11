@@ -21,17 +21,27 @@ def data_cleaner(data):
     #calculate acceleration using velocity calculated 
     data_local['acceleration'] = data_local['velocity'].diff()/data_local['time'].diff()
     
-    data_local = data_local.dropna() # dropna() tells pandas to remove any sets that have NaN values. e.g. in our vectorized filtering, a new entry will be generated when calculating the diff for the first set as there is no previous set
-    # This dummy set used to calculate the .diff() of first set will have NaN value, so we should remove it.
+    # Smooth the data (without smoothing the results will be too random as differentiation increases the effect of noise). We do this using a rolling average
+    data_local['smoothed_acceleration'] = data_local['acceleration'].rolling(window=10).mean()
+    # LEARNER's note: rolling average is a method where we take the average of a certain value in a window of sets. It 'rolls' because we slide the window over the data sets 1 by 1. e.g. our window here is 10, so the first window will be 9 dummies + 1st set, 2nd window will be 8 dummies + 1st set + 2nd set and so on.
+    # Syntax breakdown: pandas does the rolling window for us using the .rolling() method. window is the amount of sets used to calculate the value (in this case the mean).
+    # e.g. when we set window=10, this means that the 10th set in the window will have its specified value (smoothed_acceleration in this case) set to the average of the acceleration of the 10 sets in the window
     
-    # Smooth the data (without smoothing the results will be too random as differentiation increases the effect of noise)
+    data_local = data_local.dropna() # dropna() tells pandas to remove any sets that have NaN values. 
+    #e.g. in our vectorized filtering, a new entry will be generated when calculating the diff for the first set as there is no previous set, in rolling window window-1 dummies will be created.
+    # All dummy sets have NaN value, so we should remove them.
     
-    
-    #plot graph to see results
-    plt.plot(data_local['time'], data_local['acceleration'], marker = 'o', linestyle = '-')
-    plt.title('acceleration velocity against time')
-    plt.xlabel('time(s)')
-    plt.ylabel('acceleration (m/s^2)')
+    #plot graph to see results. Here we plot the original acceleration and smoothed acceleration side by side to see the difference
+    fig, graph = plt.subplots(nrows = 1, ncols = 2)
+    graph[0].plot(data_local['time'], data_local['acceleration'], marker = 'o', linestyle = '-')
+    graph[0].set_title('accleration against time')
+    graph[0].set_xlabel('time(s)')
+    graph[0].set_ylabel('a (m/s^2)')
+    graph[1].plot(data_local['time'], data_local['smoothed_acceleration'], marker = 'o', linestyle = '-')
+    graph[1].set_title('smoothed acceleration against time')
+    graph[1].set_xlabel('time(s)')
+    graph[1].set_ylabel('a (m/s^2)')
+    plt.tight_layout()
     plt.show()
     
     return data_local
